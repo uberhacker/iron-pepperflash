@@ -1,0 +1,35 @@
+#!/bin/bash
+cd $HOME/Downloads
+ARCH=$(uname -m | cut -d_ -f2)
+if [ $ARCH == 64 ]; then
+  IRON=iron64
+else
+  IRON=iron
+fi
+INSTALLED=$(dpkg -l | grep "^ii  iron" 2> /dev/null)
+if [ -z "$INSTALLED" ]; then
+  WGET=$(which wget 2> /dev/null)
+  if [ $? == 1 ]; then
+    sudo apt-get install wget
+  fi
+  wget http://www.srware.net/downloads/$IRON.deb
+  if [ ! -f $HOME/Downloads/$IRON.deb ]; then
+    echo "Unable to locate $IRON.deb.  Install failed."
+    exit 1
+  fi
+  sudo dpkg -i $IRON.deb
+  rm -f $IRON.deb
+fi
+sudo apt-get install pepperflashplugin-nonfree
+VER=$(grep version /usr/lib/pepperflashplugin-nonfree/manifest.json | cut -d: -f2 | cut -d'"' -f2 2> /dev/null)
+if [ -z "$VER" ]; then
+  echo "Unable to determine the Pepperflash version.  Install failed."
+  exit 1
+fi
+PEPPERFLASH=$(grep pepperflash /usr/share/applications/iron.desktop 2> /dev/null)
+if [ ! -z "$PEPPERFLASH" ]; then
+  echo "SRWare Iron with Pepperflash already configured."
+else
+  sudo sed -i "s|/usr/share/iron/iron|/usr/share/iron/iron --ppapi-flash-path=/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so --ppapi-flash-version=$VER|" /usr/share/applications/iron.desktop
+  echo "SRWare Iron with Pepperflash installed successfully."
+fi
