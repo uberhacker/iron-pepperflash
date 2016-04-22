@@ -18,6 +18,10 @@ if [ -z "$INSTALLED" ]; then
     exit 1
   fi
   sudo dpkg -i $IRON.deb
+  if [ ! -f /usr/share/applications/iron.desktop ]; then
+    echo "Unable to locate iron.desktop.  Install failed."
+    exit 1
+  fi
   rm -f $IRON.deb
 fi
 sudo apt-get install pepperflashplugin-nonfree
