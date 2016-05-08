@@ -12,7 +12,9 @@ if [ -z "$INSTALLED" ]; then
   if [ $? == 1 ]; then
     sudo apt-get install wget
   fi
-  wget http://www.srware.net/downloads/$IRON.deb
+  if [ ! -f $HOME/Downloads/$IRON.deb ]; then
+    wget http://www.srware.net/downloads/$IRON.deb
+  fi
   if [ ! -f $HOME/Downloads/$IRON.deb ]; then
     echo "Unable to locate $IRON.deb.  Install failed."
     exit 1
