@@ -9,3 +9,7 @@ $ git clone https://github.com/uberhacker/iron-pepperflash
 $ iron-pepperflash/iron-pepperflash
 ```
 To verify the installation, launch SRWare Iron and visit chrome://plugins/.  The Adobe Flash Player plugin should be visible.
+## Usage
+```
+$ iron-pepperflash/iron-pepperflash [-u|--upgrade]
+```
