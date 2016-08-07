@@ -53,15 +53,15 @@ if [ -z "$VER" ]; then
     exit 1
   fi
 fi
-INSTALLED=$(dpkg -l | grep "^ii  iron" 2> /dev/null)
-if [ -z "$INSTALLED" ]; then
+IRONVER=$(dpkg -l | grep "^ii  iron" | xargs | cut -d' ' -f3 2> /dev/null)
+if [ -z "$IRONVER" ]; then
   echo "SRWare Iron with Pepperflash not installed."
   exit 1
 fi
 PEPPERFLASH=$(grep pepperflash /usr/share/applications/iron.desktop 2> /dev/null)
 if [ ! -z "$PEPPERFLASH" ]; then
-  echo "SRWare Iron with Pepperflash $VER already installed."
+  echo "SRWare Iron $IRONVER with Pepperflash $VER already installed."
 else
   sudo sed -i "s|/usr/share/iron/iron|/usr/share/iron/iron --ppapi-flash-path=$LIB --ppapi-flash-version=$VER|" /usr/share/applications/iron.desktop
-  echo "SRWare Iron with Pepperflash $VER installed successfully."
+  echo "SRWare Iron $IRONVER with Pepperflash $VER installed successfully."
 fi
