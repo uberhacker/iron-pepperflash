@@ -20,11 +20,11 @@ if [ -z "$INSTALLED" ]; then
   if [ $? == 1 ]; then
     sudo apt-get install wget
   fi
-  if [ -f $HOME/Downloads/$IRON.deb ]; then
-    rm -f $HOME/Downloads/$IRON.deb
+  if [ -f $IRON.deb ]; then
+    rm -f $IRON.deb
   fi
   wget http://www.srware.net/downloads/$IRON.deb
-  if [ ! -f $HOME/Downloads/$IRON.deb ]; then
+  if [ ! -f $IRON.deb ]; then
     echo "Unable to locate $IRON.deb.  Install failed."
     exit 1
   fi
@@ -35,11 +35,23 @@ if [ -z "$INSTALLED" ]; then
   fi
   rm -f $IRON.deb
 fi
-sudo apt-get install pepperflashplugin-nonfree
-VER=$(grep version /usr/lib/pepperflashplugin-nonfree/manifest.json | cut -d: -f2 | cut -d'"' -f2 2> /dev/null)
+FLASH=$(dpkg -l | grep "^ii  adobe-flashplugin" 2> /dev/null)
+if [ -z "$FLASH" ]; then
+  sudo apt-get install adobe-flashplugin
+fi
+LIB="/usr/lib/adobe-flashplugin/libpepflashplayer.so"
+VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
 if [ -z "$VER" ]; then
-  echo "Unable to determine the Pepperflash version.  Install failed."
-  exit 1
+  FLASH=$(dpkg -l | grep "^ii  pepperflashplugin-nonfree" 2> /dev/null)
+  if [ -z "$FLASH" ]; then
+    sudo apt-get install pepperflashplugin-nonfree
+  fi
+  LIB="/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so"
+  VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
+  if [ -z "$VER" ]; then
+    echo "Unable to determine the Pepperflash version.  Install failed."
+    exit 1
+  fi
 fi
 INSTALLED=$(dpkg -l | grep "^ii  iron" 2> /dev/null)
 if [ -z "$INSTALLED" ]; then
@@ -48,8 +60,8 @@ if [ -z "$INSTALLED" ]; then
 fi
 PEPPERFLASH=$(grep pepperflash /usr/share/applications/iron.desktop 2> /dev/null)
 if [ ! -z "$PEPPERFLASH" ]; then
-  echo "SRWare Iron with Pepperflash already installed."
+  echo "SRWare Iron with Pepperflash $VER already installed."
 else
-  sudo sed -i "s|/usr/share/iron/iron|/usr/share/iron/iron --ppapi-flash-path=/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so --ppapi-flash-version=$VER|" /usr/share/applications/iron.desktop
-  echo "SRWare Iron with Pepperflash installed successfully."
+  sudo sed -i "s|/usr/share/iron/iron|/usr/share/iron/iron --ppapi-flash-path=$LIB --ppapi-flash-version=$VER|" /usr/share/applications/iron.desktop
+  echo "SRWare Iron with Pepperflash $VER installed successfully."
 fi
