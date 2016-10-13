@@ -37,20 +37,38 @@ if [ -z "$INSTALLED" ]; then
 fi
 FLASH=$(dpkg -l | grep "^ii  adobe-flashplugin" 2> /dev/null)
 if [ -z "$FLASH" ]; then
-  sudo apt-get install adobe-flashplugin
+  sudo apt-get update
+  SEARCH=$(apt-cache search adobe-flashplugin)
+  if [ ! -z "$SEARCH" ]; then
+    sudo apt-get install adobe-flashplugin
+  fi
 fi
 LIB="/usr/lib/adobe-flashplugin/libpepflashplayer.so"
 VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
 if [ -z "$VER" ]; then
-  FLASH=$(dpkg -l | grep "^ii  pepperflashplugin-nonfree" 2> /dev/null)
+  FLASH=$(dpkg -l | grep "^ii  flashplugin-installer" 2> /dev/null)
   if [ -z "$FLASH" ]; then
-    sudo apt-get install pepperflashplugin-nonfree
+    SEARCH=$(apt-cache search flashplugin-installer)
+    if [ ! -z "$SEARCH" ]; then
+      sudo apt-get install flashplugin-installer
+    fi
   fi
-  LIB="/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so"
+  LIB="/usr/lib/flashplugin-installer/libflashplayer.so"
   VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
   if [ -z "$VER" ]; then
-    echo "Unable to determine the Pepperflash version.  Install failed."
-    exit 1
+    FLASH=$(dpkg -l | grep "^ii  pepperflashplugin-nonfree" 2> /dev/null)
+    if [ -z "$FLASH" ]; then
+      SEARCH=$(apt-cache search pepperflashplugin-nonfree)
+      if [ ! -z "$SEARCH" ]; then
+        sudo apt-get install pepperflashplugin-nonfree
+      fi
+    fi
+    LIB="/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so"
+    VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
+    if [ -z "$VER" ]; then
+      echo "Unable to determine the Pepperflash version.  Install failed."
+      exit 1
+    fi
   fi
 fi
 IRONVER=$(dpkg -l | grep "^ii  iron" | xargs | cut -d' ' -f3 2> /dev/null)
