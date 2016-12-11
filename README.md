@@ -14,6 +14,5 @@ $ iron-pepperflash
 To verify the installation, launch SRWare Iron and visit chrome://plugins/.  The Adobe Flash Player plugin should be visible.
 ## Upgrade
 ```
-$ cd /path/to/iron-pepperflash
-$ ./iron-pepperflash up|upgrade
+$ iron-pepperflash up|upgrade
 ```
