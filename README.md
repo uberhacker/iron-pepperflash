@@ -6,11 +6,14 @@ Install and configure SRWare Iron with Pepperflash (Adobe Flash Player for Chrom
 ## Installation
 ```
 $ git clone https://github.com/uberhacker/iron-pepperflash
-$ iron-pepperflash/iron-pepperflash
+$ cd iron-pepperflash
+$ chmod +x iron-pepperflash
+$ sudo cp iron-pepperflash /usr/local/bin
+$ iron-pepperflash
 ```
 To verify the installation, launch SRWare Iron and visit chrome://plugins/.  The Adobe Flash Player plugin should be visible.
 ## Upgrade
 ```
 $ cd /path/to/iron-pepperflash
-$ ./iron-pepperflash -u|--upgrade
+$ ./iron-pepperflash up|upgrade
 ```

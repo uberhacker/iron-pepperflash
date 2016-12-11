@@ -8,10 +8,10 @@ else
 fi
 INSTALLED=$(dpkg -l | grep "^ii  iron" 2> /dev/null)
 if test $1; then
-  if [[ "$1" == "-u" || "$1" == "--upgrade" ]]; then
+  if [[ "$1" == "up" || "$1" == "upgrade" ]]; then
     INSTALLED=""
   else
-    echo "Invalid option.  Usage: $0 [-u|--upgrade]"
+    echo "Invalid option.  Usage: $0 [up|upgrade]"
     exit 1
   fi
 fi
