@@ -46,28 +46,39 @@ fi
 LIB="/usr/lib/adobe-flashplugin/libpepflashplayer.so"
 VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
 if [ -z "$VER" ]; then
-  FLASH=$(dpkg -l | grep "^ii  flashplugin-installer" 2> /dev/null)
+  FLASH=$(dpkg -l | grep "^ii  flashplayer-chromium" 2> /dev/null)
   if [ -z "$FLASH" ]; then
-    SEARCH=$(apt-cache search flashplugin-installer)
+    SEARCH=$(apt-cache search flashplayer-chromium)
     if [ ! -z "$SEARCH" ]; then
-      sudo apt-get install flashplugin-installer
+      sudo apt-get install flashplayer-chromium
     fi
   fi
-  LIB="/usr/lib/flashplugin-installer/libflashplayer.so"
+  LIB="/usr/lib/adobe-flashplugin/libpepflashplayer.so"
   VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
   if [ -z "$VER" ]; then
-    FLASH=$(dpkg -l | grep "^ii  pepperflashplugin-nonfree" 2> /dev/null)
+    FLASH=$(dpkg -l | grep "^ii  flashplugin-installer" 2> /dev/null)
     if [ -z "$FLASH" ]; then
-      SEARCH=$(apt-cache search pepperflashplugin-nonfree)
+      SEARCH=$(apt-cache search flashplugin-installer)
       if [ ! -z "$SEARCH" ]; then
-        sudo apt-get install pepperflashplugin-nonfree
+        sudo apt-get install flashplugin-installer
       fi
     fi
-    LIB="/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so"
+    LIB="/usr/lib/flashplugin-installer/libflashplayer.so"
     VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
     if [ -z "$VER" ]; then
-      echo "Unable to determine the Pepperflash version.  Install failed."
-      exit 1
+      FLASH=$(dpkg -l | grep "^ii  pepperflashplugin-nonfree" 2> /dev/null)
+      if [ -z "$FLASH" ]; then
+        SEARCH=$(apt-cache search pepperflashplugin-nonfree)
+        if [ ! -z "$SEARCH" ]; then
+          sudo apt-get install pepperflashplugin-nonfree
+        fi
+      fi
+      LIB="/usr/lib/pepperflashplugin-nonfree/libpepflashplayer.so"
+      VER=$(strings $LIB 2> /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g")
+      if [ -z "$VER" ]; then
+        echo "Unable to determine the Pepperflash version.  Install failed."
+        exit 1
+      fi
     fi
   fi
 fi
